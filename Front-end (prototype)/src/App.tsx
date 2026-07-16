@@ -39,11 +39,11 @@ const queryClient = new QueryClient();
 
 // Available Roles for testing RBAC
 const ROLES = [
-  { id: "Analyst", name: "Compliance Analyst (L1)", desc: "Gestiona colas y toma decisiones" },
-  { id: "Senior Analyst", name: "Senior Analyst (L2)", desc: "Analista Senior + Ejecución de Respuesta SOC" },
-  { id: "Compliance Manager", name: "Compliance Manager", desc: "Ver estadísticas globales sin decidir" },
-  { id: "Admin", name: "Platform Admin", desc: "CRUD total + Consola Cypher + Cross-Tenant" },
-  { id: "Auditor", name: "Regulatory Auditor", desc: "Acceso de lectura y auditoría" }
+  { id: "Analyst", name: "Compliance Analyst (L1)", desc: "Manages queues and makes investigation decisions" },
+  { id: "Senior Analyst", name: "Senior Analyst (L2)", desc: "Senior Analyst + SOC Response Execution" },
+  { id: "Compliance Manager", name: "Compliance Manager", desc: "View global stats and perform managerial duties" },
+  { id: "Admin", name: "Platform Admin", desc: "Full CRUD access + Cypher Console + Cross-Tenant view" },
+  { id: "Auditor", name: "Regulatory Auditor", desc: "Read-only access and compliance auditing" }
 ];
 
 export default function App() {
@@ -179,7 +179,7 @@ function NexusApp() {
         body: JSON.stringify({ analystName: userEmail })
       });
       if (res.ok) {
-        triggerNotification("success", "Caso auto-asignado con éxito");
+        triggerNotification("success", "Case self-assigned successfully");
         fetchQueue();
         if (selectedCaseId === caseId) {
           // reload current case
@@ -222,7 +222,7 @@ function NexusApp() {
 
   // 5. Trigger SOC action response feedback
   const handleTriggerResponseAction = (actionName: string) => {
-    triggerNotification("success", `Iniciando acción de respuesta SOC: ${actionName}`);
+    triggerNotification("success", `Initiating SOC response action: ${actionName}`);
     // Record into logs
     if (caseDetails) {
       const updatedLogs = [
@@ -232,8 +232,8 @@ function NexusApp() {
           timestamp: new Date().toISOString(),
           user: userEmail,
           role: activeRole,
-          action: "Respuesta de Emergencia SOC",
-          details: `Se disparó la mitigación técnica: "${actionName}".`
+          action: "SOC Emergency Response",
+          details: `Technical mitigation triggered: "${actionName}".`
         },
         ...caseDetails.auditLogs
       ];
@@ -341,7 +341,7 @@ function NexusApp() {
 
           {/* Main Navigation links */}
           <nav className="p-3.5 space-y-1">
-            <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest block px-3 mb-2">Centro de Control</span>
+            <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest block px-3 mb-2">Control Center</span>
             
             <button
               onClick={() => { setCurrentView("queue"); setSelectedCaseId(null); }}
@@ -353,7 +353,7 @@ function NexusApp() {
             >
               <div className="flex items-center gap-2.5">
                 <Database className="w-4 h-4" />
-                <span>Cola de Alertas</span>
+                <span>Alerts Queue</span>
               </div>
               <span className="text-[10px] font-bold font-mono px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-zinc-500">
                 {alerts.length}
@@ -370,7 +370,7 @@ function NexusApp() {
                 }`}
               >
                 <ShieldAlert className="w-4 h-4 text-rose-400 animate-pulse" />
-                <span className="truncate">Caso {selectedCaseId}</span>
+                <span className="truncate">Case {selectedCaseId}</span>
               </button>
             )}
 
@@ -395,10 +395,10 @@ function NexusApp() {
               }`}
             >
               <Network className="w-4 h-4" />
-              <span>Explorador de Grafos</span>
+              <span>Graph Explorer</span>
             </button>
 
-            <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest block px-3 pt-4 mb-2">Administración</span>
+            <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest block px-3 pt-4 mb-2">Administration</span>
 
             <button
               onClick={() => setCurrentView("tenants")}
@@ -409,7 +409,7 @@ function NexusApp() {
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Gestión de Bancos</span>
+              <span>Bank Settings / Multi-Tenant</span>
             </button>
 
             <button
@@ -421,7 +421,7 @@ function NexusApp() {
               }`}
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Simulación de Eventos</span>
+              <span>Alert Simulator</span>
             </button>
           </nav>
         </div>
@@ -468,10 +468,10 @@ function NexusApp() {
               {/* Summary Stats Strip */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: "Bandeja de Entrada", value: queueStats.pending, color: "text-zinc-100", border: "border-zinc-800" },
-                  { label: "Alertas Críticas", value: queueStats.critical, color: "text-rose-400", border: "border-rose-500/25" },
-                  { label: "Casos Consolidados", value: queueStats.total, color: "text-zinc-400", border: "border-zinc-850" },
-                  { label: "Resueltos / Cerrados", value: queueStats.resolved, color: "text-emerald-400", border: "border-emerald-500/25" }
+                  { label: "Inbox Queue", value: queueStats.pending, color: "text-zinc-100", border: "border-zinc-800" },
+                  { label: "Critical Alerts", value: queueStats.critical, color: "text-rose-400", border: "border-rose-500/25" },
+                  { label: "Consolidated Cases", value: queueStats.total, color: "text-zinc-400", border: "border-zinc-850" },
+                  { label: "Resolved / Closed", value: queueStats.resolved, color: "text-emerald-400", border: "border-emerald-500/25" }
                 ].map((st, idx) => (
                   <div key={idx} className={`bg-zinc-900/30 border rounded-xl p-4 flex flex-col justify-between ${st.border}`}>
                     <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider">{st.label}</span>
@@ -484,19 +484,19 @@ function NexusApp() {
               <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-4.5 space-y-3">
                 <div className="flex items-center gap-2 border-b border-zinc-850 pb-2">
                   <Filter className="w-4 h-4 text-zinc-400" />
-                  <span className="text-xs font-mono font-bold text-zinc-300 uppercase">Filtros Avanzados de Cola</span>
+                  <span className="text-xs font-mono font-bold text-zinc-300 uppercase">Advanced Queue Filters</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   {/* Verdict Select */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Dictamen</label>
+                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Verdict</label>
                     <select
                       value={filterVerdict}
                       onChange={(e) => setFilterVerdict(e.target.value)}
                       className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 font-mono text-xs text-zinc-300 focus:outline-none"
                     >
-                      <option value="all">TODOS</option>
+                      <option value="all">ALL</option>
                       <option value="BLOCK">BLOCK</option>
                       <option value="ESCALATE">ESCALATE</option>
                       <option value="MONITOR">MONITOR</option>
@@ -506,13 +506,13 @@ function NexusApp() {
 
                   {/* Country select */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Jurisdicción</label>
+                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Jurisdiction</label>
                     <select
                       value={filterCountry}
                       onChange={(e) => setFilterCountry(e.target.value)}
                       className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 font-mono text-xs text-zinc-300 focus:outline-none"
                     >
-                      <option value="all">TODAS (UY / AR)</option>
+                      <option value="all">ALL (UY / AR)</option>
                       <option value="UY">URUGUAY (UY)</option>
                       <option value="AR">ARGENTINA (AR)</option>
                     </select>
@@ -520,13 +520,13 @@ function NexusApp() {
 
                   {/* Tenant select */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Banco Inquilino</label>
+                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Tenant Bank</label>
                     <select
                       value={filterTenant}
                       onChange={(e) => setFilterTenant(e.target.value)}
                       className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2 font-mono text-xs text-zinc-300 focus:outline-none"
                     >
-                      <option value="all">TODOS LOS BANCOS</option>
+                      <option value="all">ALL BANKS</option>
                       {tenants.map(t => (
                         <option key={t.id} value={t.id}>{t.name}</option>
                       ))}
@@ -536,7 +536,7 @@ function NexusApp() {
                   {/* Min Score slide */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[9px] font-mono font-bold text-zinc-500">
-                      <span>Riesgo Mínimo</span>
+                      <span>Minimum Risk</span>
                       <span className="text-emerald-400">{Math.round(minScore * 100)}%</span>
                     </div>
                     <input
@@ -552,13 +552,13 @@ function NexusApp() {
 
                   {/* Text search */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Buscador Cliente / Doc</label>
+                    <label className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Search Client / ID</label>
                     <div className="relative">
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="ej. Eduardo, C.I., CUIT..."
+                        placeholder="e.g. John Doe, ID, CUIT..."
                         className="w-full bg-zinc-950 border border-zinc-800 focus:border-emerald-500/40 rounded-lg pl-8 pr-3 py-2 font-mono text-xs text-zinc-200 focus:outline-none"
                       />
                       <Search className="w-3.5 h-3.5 text-zinc-600 absolute left-2.5 top-2.5" />
@@ -570,12 +570,12 @@ function NexusApp() {
               {/* Queue Table */}
               <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden">
                 <div className="px-5 py-3.5 border-b border-zinc-850 flex items-center justify-between bg-zinc-900/40">
-                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">BANDEJA DE TRABAJO ACTIVAS ({alerts.length})</span>
+                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">ACTIVE WORKLIST ({alerts.length})</span>
                   <button
                     onClick={fetchQueue}
                     className="p-1.5 rounded bg-zinc-950 hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-750 text-zinc-400 hover:text-zinc-200 text-[10px] font-mono font-bold transition flex items-center gap-1 cursor-pointer"
                   >
-                    <RefreshCw className="w-3 h-3" /> Sincronizar Cola
+                    <RefreshCw className="w-3 h-3" /> Sync Queue
                   </button>
                 </div>
 
@@ -583,14 +583,14 @@ function NexusApp() {
                   <table className="w-full text-left border-collapse text-xs font-mono">
                     <thead>
                       <tr className="border-b border-zinc-850 text-zinc-500 text-[10px] uppercase bg-zinc-950/20">
-                        <th className="py-3 px-4">Caso ID</th>
-                        <th className="py-3 px-4">Banco Inquilino</th>
-                        <th className="py-3 px-4">Cliente / Documento</th>
-                        <th className="py-3 px-4">Patrón</th>
-                        <th className="py-3 px-4">Riesgo / Confianza</th>
-                        <th className="py-3 px-4">Monto Evaluado</th>
-                        <th className="py-3 px-4">Recomendación</th>
-                        <th className="py-3 px-4 text-right">Acción</th>
+                        <th className="py-3 px-4">Case ID</th>
+                        <th className="py-3 px-4">Tenant Bank</th>
+                        <th className="py-3 px-4">Client / ID Document</th>
+                        <th className="py-3 px-4">Pattern</th>
+                        <th className="py-3 px-4">Risk / Confidence</th>
+                        <th className="py-3 px-4">Evaluated Amount</th>
+                        <th className="py-3 px-4">Recommendation</th>
+                        <th className="py-3 px-4 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-850 text-zinc-300">
@@ -634,14 +634,14 @@ function NexusApp() {
                             <td className="py-4 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                               {al.assignedTo ? (
                                 <span className="text-[10px] text-zinc-500 font-mono italic">
-                                  Asignado a: {al.assignedTo === userEmail ? "Ti" : al.assignedTo.split('@')[0]}
+                                  Assigned to: {al.assignedTo === userEmail ? "You" : al.assignedTo.split('@')[0]}
                                 </span>
                               ) : (
                                 <button
                                   onClick={() => handleAssignCase(al.id)}
                                   className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 hover:border-emerald-500/40 rounded bg-emerald-500/5 px-2.5 py-1.5 transition cursor-pointer"
                                 >
-                                  Tomar Caso
+                                  Take Case
                                 </button>
                               )}
                             </td>
@@ -650,7 +650,7 @@ function NexusApp() {
                       ) : (
                         <tr>
                           <td colSpan={8} className="py-8 text-center text-zinc-500 font-mono text-xs">
-                            Ninguna alerta activa que coincida con los filtros aplicados.
+                            No active alerts match the selected filters.
                           </td>
                         </tr>
                       )}
@@ -674,15 +674,15 @@ function NexusApp() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5">
-                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase">EXPEDIENTE DIGITAL DE INVESTIGACIÓN · {selectedCaseId}</h2>
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase">DIGITAL INVESTIGATION CASE FILE · {selectedCaseId}</h2>
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20 uppercase">
                         {caseDetails.alert.status}
                       </span>
                     </div>
                     <p className="text-xs text-zinc-400 mt-1">
-                      Cliente: <span className="font-bold text-zinc-200 font-mono">{caseDetails.alert.customerName}</span> | 
-                      Documento: <span className="font-mono text-zinc-200">{caseDetails.alert.customerDocument}</span> |
-                      Banco: <span className="font-bold text-emerald-400 uppercase font-mono">{caseDetails.alert.tenantName} ({caseDetails.alert.country})</span>
+                      Customer: <span className="font-bold text-zinc-200 font-mono">{caseDetails.alert.customerName}</span> | 
+                      ID / Document: <span className="font-mono text-zinc-200">{caseDetails.alert.customerDocument}</span> |
+                      Bank: <span className="font-bold text-emerald-400 uppercase font-mono">{caseDetails.alert.tenantName} ({caseDetails.alert.country})</span>
                     </p>
                   </div>
                 </div>
@@ -692,7 +692,7 @@ function NexusApp() {
                     onClick={() => { setCurrentView("queue"); setSelectedCaseId(null); }}
                     className="px-3.5 py-2 rounded-lg border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 font-mono text-xs transition cursor-pointer"
                   >
-                    Volver a la Cola
+                    Return to Queue
                   </button>
                 </div>
               </div>
@@ -700,10 +700,10 @@ function NexusApp() {
               {/* Tabbed Layout buttons */}
               <div className="flex border-b border-zinc-850 text-xs font-mono overflow-x-auto pb-0.5">
                 {[
-                  { id: "narrative", label: "NARRATIVA & EXPLICACIÓN AI" },
-                  { id: "agents", label: "AGENTES SWARM (6)" },
-                  { id: "graph", label: "SUBGRAFO DE VINCULACIÓN" },
-                  { id: "ros", label: "REPORTE DE SOSPECHA (ROS)" },
+                  { id: "narrative", label: "AI NARRATIVE & REASONING" },
+                  { id: "agents", label: "SWARM AGENTS (6)" },
+                  { id: "graph", label: "LINK SUBGRAPH" },
+                  { id: "ros", label: "SUSPICIOUS ACTIVITY REPORT (SAR)" },
                   { id: "history", label: "AUDIT LOG & TIMELINE" }
                 ].map((tb) => (
                   <button
@@ -727,25 +727,25 @@ function NexusApp() {
                     {/* Narrative panel */}
                     <div className="lg:col-span-2 space-y-4">
                       <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-5 space-y-3.5">
-                        <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Narrativa de Operación Sospechosa</span>
+                        <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Suspicious Activity Narrative</span>
                         <p className="text-xs text-zinc-300 leading-relaxed font-mono">
                           {caseDetails.narrative}
                         </p>
                       </div>
 
                       <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-5 space-y-3.5">
-                        <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Dictamen Automatizado del Jurista Soberano (Agente 5)</span>
+                        <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Sovereign Jurist Automated Recommendation (Agent 5)</span>
                         
                         <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 text-xs font-mono text-zinc-300">
                           <div className="flex items-center gap-2 text-amber-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
                             <AlertTriangle className="w-4 h-4" />
-                            RECOMENDACIÓN DE SISTEMA: {caseDetails.alert.verdict} (CONFIDENCIA: {Math.round(caseDetails.alert.confidenceScore * 100)}%)
+                            SYSTEM RECOMMENDATION: {caseDetails.alert.verdict} (CONFIDENCE: {Math.round(caseDetails.alert.confidenceScore * 100)}%)
                           </div>
                           <p className="italic">
-                            "El Jurista determinó recomendación {caseDetails.alert.verdict} basada en la estructuración de giros y la inconsistencia absoluta del perfil del cliente con el volumen observado."
+                            "The Jurist recommended {caseDetails.alert.verdict} based on the structured flow of transfers and the complete inconsistency of the customer profile with the observed transaction volume."
                           </p>
                           <div className="mt-3 text-[10px] text-amber-500/90 font-bold border-t border-amber-500/10 pt-2 uppercase">
-                            * ADVERTENCIA: ESTO ES UNA RECOMENDACIÓN AUTOMATIZADA — SE REQUIERE ABSOLUTAMENTE UNA DECISIÓN FINAL POR UN ANALISTA HUMANO.
+                            * WARNING: THIS IS AN AUTOMATED RECOMMENDATION — A FINAL DECISION BY A HUMAN ANALYST IS ABSOLUTELY REQUIRED.
                           </div>
                         </div>
                       </div>
@@ -753,7 +753,7 @@ function NexusApp() {
 
                     {/* AI Reasoning numbered step by step */}
                     <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-5 space-y-4">
-                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Razonamiento AI de Enjambre (Step-by-Step)</span>
+                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Swarm AI Reasoning (Step-by-Step)</span>
                       
                       <div className="space-y-4 font-mono">
                         {caseDetails.aiReasoning.map((step: string, i: number) => (
@@ -784,7 +784,7 @@ function NexusApp() {
                   <div className="h-[460px]">
                     <NetworkGraphView
                       graph={caseDetails.graph}
-                      title={`SUBGRAFO DE COMPORTAMIENTO CASO ${selectedCaseId}`}
+                      title={`BEHAVIOR LINK SUBGRAPH FOR CASE ${selectedCaseId}`}
                     />
                   </div>
                 )}
@@ -795,71 +795,71 @@ function NexusApp() {
                     {/* Header bar print */}
                     <div className="flex items-center justify-between bg-zinc-900/40 p-4 rounded-xl border border-zinc-850 print:hidden">
                       <div>
-                        <h4 className="text-xs font-mono font-bold text-zinc-200">BORRADOR COMPLETO REPORTE ROS NORMADO</h4>
-                        <p className="text-[10px] text-zinc-500 font-mono">Generado automáticamente bajo normativas ALA/CFT.</p>
+                        <h4 className="text-xs font-mono font-bold text-zinc-200">FULL REGULATORY SAR REPORT DRAFT</h4>
+                        <p className="text-[10px] text-zinc-500 font-mono">Automatically generated under AML/CFT regulations.</p>
                       </div>
                       <button
                         onClick={handlePrintROS}
                         className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-mono text-xs transition cursor-pointer"
                       >
-                        <Printer className="w-4 h-4" /> Imprimir / PDF
+                        <Printer className="w-4 h-4" /> Print / PDF
                       </button>
                     </div>
 
                     {/* Report Form Sheet */}
                     <div className="bg-white text-zinc-900 p-8 rounded-xl shadow-2xl border border-zinc-300 font-serif max-w-4xl mx-auto print:p-0 print:border-none print:shadow-none">
                       <div className="text-center space-y-2 border-b-2 border-zinc-800 pb-4">
-                        <h1 className="text-lg font-bold font-sans uppercase tracking-wider text-zinc-800">Reporte de Operación Sospechosa (ROS)</h1>
-                        <p className="text-xs font-mono uppercase text-zinc-500">Unidad de Información y Análisis Financiero / Banco Central</p>
+                        <h1 className="text-lg font-bold font-sans uppercase tracking-wider text-zinc-800">Suspicious Activity Report (SAR)</h1>
+                        <p className="text-xs font-mono uppercase text-zinc-500">Financial Intelligence & Analysis Unit / Central Bank</p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 my-6 text-xs font-mono">
                         <div>
-                          <p className="font-bold text-zinc-600">Sujeto Reportado:</p>
+                          <p className="font-bold text-zinc-600">Reported Subject:</p>
                           <p className="text-sm font-bold text-zinc-800">{caseDetails.rosReport.subjectName}</p>
                         </div>
                         <div>
-                          <p className="font-bold text-zinc-600">Documento:</p>
+                          <p className="font-bold text-zinc-600">ID / Document:</p>
                           <p className="text-sm font-bold text-zinc-800">{caseDetails.rosReport.documentType} {caseDetails.rosReport.documentNumber}</p>
                         </div>
                         <div>
-                          <p className="font-bold text-zinc-600">Fecha de Reporte:</p>
+                          <p className="font-bold text-zinc-600">Report Date:</p>
                           <p className="text-zinc-800">{caseDetails.rosReport.reportDate}</p>
                         </div>
                         <div>
-                          <p className="font-bold text-zinc-600">Inquilino / Banco Remitente:</p>
+                          <p className="font-bold text-zinc-600">Tenant / Sending Bank:</p>
                           <p className="text-zinc-800">{caseDetails.alert.tenantName}</p>
                         </div>
                         <div>
-                          <p className="font-bold text-zinc-600">Código Normativa Aplicada:</p>
+                          <p className="font-bold text-zinc-600">Applied Regulatory Code:</p>
                           <p className="text-zinc-800">{caseDetails.rosReport.regulatoryCode}</p>
                         </div>
                         <div>
-                          <p className="font-bold text-zinc-600">Patrón de Sospecha:</p>
+                          <p className="font-bold text-zinc-600">Suspicion Pattern:</p>
                           <p className="text-zinc-800 uppercase font-bold text-rose-600">{caseDetails.alert.pattern}</p>
                         </div>
                       </div>
 
                       <div className="space-y-4 text-xs leading-relaxed text-zinc-800">
                         <div className="border-t border-zinc-300 pt-3">
-                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">1. Actividades Sospechosas Identificadas</h3>
-                          <p>{caseDetails.rosReport.suspiciousActivities}</p>
+                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">1. Identified Suspicious Activities</h3>
+                           <p>{caseDetails.rosReport.suspiciousActivities}</p>
                         </div>
 
                         <div className="border-t border-zinc-300 pt-3">
-                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">2. Resumen Narrativo Detallado</h3>
+                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">2. Detailed Narrative Summary</h3>
                           <p>{caseDetails.rosReport.narrativeSummary}</p>
                         </div>
 
                         <div className="border-t border-zinc-300 pt-3">
-                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">3. Medidas de Mitigación y Acciones Recomendadas</h3>
+                          <h3 className="font-sans font-bold text-zinc-700 uppercase mb-1">3. Mitigation Measures and Recommended Actions</h3>
                           <p>{caseDetails.rosReport.recommendedActions}</p>
                         </div>
                       </div>
 
                       <div className="border-t-2 border-zinc-800 mt-10 pt-4 flex justify-between items-center text-[10px] font-mono text-zinc-500">
-                        <span>Generado por Sentinel Swarm AI</span>
-                        <span>Firma de Autoridad de Cumplimiento: ___________________</span>
+                        <span>Generated by Sentinel Swarm AI</span>
+                        <span>Compliance Authority Signature: ___________________</span>
                       </div>
                     </div>
                   </div>
@@ -870,7 +870,7 @@ function NexusApp() {
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Execution Timeline */}
                     <div className="lg:col-span-2 bg-zinc-900/30 border border-zinc-800 rounded-xl p-5 space-y-4">
-                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Timeline y Latencias de Procesamiento de Agentes</span>
+                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Swarm Agent Processing Timeline & Latencies</span>
                       <div className="relative border-l border-zinc-800 ml-4 pl-6 space-y-6">
                         {caseDetails.timeline.map((tm: any, idx: number) => (
                           <div key={idx} className="relative">
@@ -880,7 +880,7 @@ function NexusApp() {
                               <h5 className="font-bold text-zinc-200">{tm.event}</h5>
                               <div className="flex items-center gap-3 text-[10px] text-zinc-500 mt-1">
                                 <span>{new Date(tm.timestamp).toLocaleTimeString()}</span>
-                                <span>Latencia: <span className="text-emerald-500">{tm.latencyMs}ms</span></span>
+                                <span>Latency: <span className="text-emerald-500">{tm.latencyMs}ms</span></span>
                               </div>
                             </div>
                           </div>
@@ -890,7 +890,7 @@ function NexusApp() {
 
                     {/* Audit Logs */}
                     <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-5 space-y-4">
-                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Historial de Auditoría de Analistas (Audit Log)</span>
+                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider block border-b border-zinc-850 pb-2">Analyst Audit Trail (Audit Log)</span>
                       
                       <div className="space-y-4 overflow-y-auto max-h-[300px]">
                         {caseDetails.auditLogs?.map((log: any) => (
@@ -916,14 +916,14 @@ function NexusApp() {
 
                 <div className="flex items-center gap-2 border-b border-zinc-850 pb-2.5 mb-4">
                   <AlertTriangle className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-mono font-bold text-zinc-200 uppercase">Panel de Dictamen de Analista Compliance (Acción Humana Obligatoria)</span>
+                  <span className="text-xs font-mono font-bold text-zinc-200 uppercase">Compliance Analyst Decision Panel (Mandatory Human Action)</span>
                 </div>
 
                 {activeRole === "Auditor" || activeRole === "Compliance Manager" ? (
                   <div className="p-4 bg-zinc-950/80 border border-zinc-850/50 rounded-lg flex items-center justify-center text-center gap-3">
                     <Lock className="w-5 h-5 text-zinc-600" />
                     <span className="text-xs font-mono text-zinc-500 max-w-lg">
-                      Gated: El rol {activeRole} posee acceso estrictamente de LECTURA y no está autorizado a dictaminar o decidir sobre el expediente.
+                      Gated: The {activeRole} role holds strictly READ-ONLY permissions and is not authorized to decide on this case.
                     </span>
                   </div>
                 ) : (
@@ -931,28 +931,28 @@ function NexusApp() {
                     
                     {/* Action Select */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Seleccionar Resolución</label>
+                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Select Resolution</label>
                       <select
                         value={decisionVerdict}
                         onChange={(e) => setDecisionVerdict(e.target.value as Verdict)}
                         className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs font-mono text-zinc-300 focus:outline-none"
                       >
                         <option value={Verdict.BLOCK}>CONFIRM FRAUD (BLOCK)</option>
-                        <option value={Verdict.ESCALATE}>ESCALAR (ESCALATE)</option>
-                        <option value={Verdict.MONITOR}>MONITOREO CONTINUO (MONITOR)</option>
+                        <option value={Verdict.ESCALATE}>ESCALATE</option>
+                        <option value={Verdict.MONITOR}>CONTINUOUS MONITORING (MONITOR)</option>
                         <option value={Verdict.DISCARD}>FALSE POSITIVE (DISCARD)</option>
                       </select>
                     </div>
 
                     {/* Comments Text */}
                     <div className="md:col-span-2 space-y-1.5">
-                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Comentarios y Justificación de la Decisión</label>
+                      <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase">Decision Comments & Justification</label>
                       <input
                         type="text"
                         required
                         value={decisionComments}
                         onChange={(e) => setDecisionComments(e.target.value)}
-                        placeholder="ej. Confirmación de estructuración física de fondos hacia cuentas mulas de Chase Bank."
+                        placeholder="e.g. Confirmed structuring scheme with funds flowing to known mule accounts."
                         className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs font-mono text-zinc-200 focus:outline-none"
                       />
                     </div>
@@ -962,7 +962,7 @@ function NexusApp() {
                       type="submit"
                       className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 rounded-lg font-mono font-bold text-xs transition uppercase cursor-pointer"
                     >
-                      Guardar Decisión
+                      Submit Decision
                     </button>
                   </form>
                 )}

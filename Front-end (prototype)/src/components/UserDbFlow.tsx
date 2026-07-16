@@ -31,7 +31,7 @@ export default function UserDbFlow() {
       email: "analyst@brou.com.uy",
       role: "Compliance Analyst (L1)",
       tenantId: "tenant-broU",
-      tenantName: "Banco República (BROU)",
+      tenantName: "Republic Bank of Uruguay (BROU)",
       status: "Active",
       clearanceLevel: "L1",
       lastLogin: "2026-07-16 08:30:11"
@@ -41,7 +41,7 @@ export default function UserDbFlow() {
       email: "senior_analyst@bna.com.ar",
       role: "Senior Analyst (L2)",
       tenantId: "tenant-bnaAR",
-      tenantName: "Banco de la Nación Argentina (BNA)",
+      tenantName: "National Bank of Argentina (BNA)",
       status: "Active",
       clearanceLevel: "L2",
       lastLogin: "2026-07-16 09:48:22"
@@ -51,7 +51,7 @@ export default function UserDbFlow() {
       email: "manager@itau.com.uy",
       role: "Compliance Manager",
       tenantId: "tenant-itauUY",
-      tenantName: "Banco Itaú Uruguay",
+      tenantName: "Itaú Bank Uruguay",
       status: "Active",
       clearanceLevel: "L2",
       lastLogin: "2026-07-15 15:28:44"
@@ -71,7 +71,7 @@ export default function UserDbFlow() {
       email: "auditor@bcu.gub.uy",
       role: "Regulatory Auditor",
       tenantId: "tenant-broU",
-      tenantName: "Banco República (BROU)",
+      tenantName: "Republic Bank of Uruguay (BROU)",
       status: "Active",
       clearanceLevel: "L1",
       lastLogin: "2026-07-14 10:05:12"
@@ -128,9 +128,9 @@ export default function UserDbFlow() {
   const [sqlResult, setSqlResult] = useState<any[] | null>(null);
 
   const tenantMapping: Record<string, string> = {
-    "tenant-broU": "Banco República (BROU)",
-    "tenant-bnaAR": "Banco de la Nación Argentina (BNA)",
-    "tenant-itauUY": "Banco Itaú Uruguay",
+    "tenant-broU": "Republic Bank of Uruguay (BROU)",
+    "tenant-bnaAR": "National Bank of Argentina (BNA)",
+    "tenant-itauUY": "Itaú Bank Uruguay",
     "global-nexus": "Nexus Global System"
   };
 
@@ -565,9 +565,9 @@ export default function UserDbFlow() {
               onChange={(e) => setNewTenant(e.target.value)}
               className="w-full bg-zinc-950 border border-zinc-850 rounded-lg p-2 font-mono text-xs text-zinc-300 focus:outline-none"
             >
-              <option value="tenant-broU">Banco República (BROU)</option>
-              <option value="tenant-bnaAR">Banco de la Nación Argentina (BNA)</option>
-              <option value="tenant-itauUY">Banco Itaú Uruguay</option>
+              <option value="tenant-broU">Republic Bank of Uruguay (BROU)</option>
+              <option value="tenant-bnaAR">National Bank of Argentina (BNA)</option>
+              <option value="tenant-itauUY">Itaú Bank Uruguay</option>
               <option value="global-nexus">Platform Admin (Nexus)</option>
             </select>
           </div>
