@@ -1,0 +1,32 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+dist/
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+
+# Data (too large for git)
+data/cases_store.json
+
+# Logs
+logs/
+/tmp/
+*.log
+
+# Docker volumes
+neo4j_data/
+kafka_data/
+redis_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
