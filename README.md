@@ -1,4 +1,4 @@
-# Sentinel Swarm
+# Sentinel Swarm - Nexus
 
 **Autonomous Risk Operating System (AROS) for real-time financial fraud detection.**
 
